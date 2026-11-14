@@ -1,0 +1,48 @@
+name: Build
+
+on:
+  push:
+    branches: [claude/jolly-thompson-6bl4l4]
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-ios:
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Xcode version
+        run: |
+          xcodebuild -version
+          swift --version
+          xcrun simctl list runtimes
+
+      - name: Download Rust package
+        run: bash scripts/public/download_rust_package.sh
+
+      - name: Resolve packages
+        run: xcodebuild -resolvePackageDependencies -project Authenticator.xcodeproj -scheme Authenticator
+
+      - name: Build iOS app (simulator)
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project Authenticator.xcodeproj \
+            -scheme Authenticator \
+            -destination 'generic/platform=iOS Simulator' \
+            -skipMacroValidation -skipPackagePluginValidation \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO \
+            2>&1 | tee build.log | grep -E "error:|warning: unre|BUILD|\*\* " || true
+          grep -q "BUILD SUCCEEDED" build.log
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
