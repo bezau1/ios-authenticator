@@ -30,7 +30,7 @@ public extension Bundle {
     }
 
     var versionIdentifier: String? {
-        string(forKey: "APP_VERSION_IDENTIFIER =
+        string(forKey: "APP_VERSION_IDENTIFIER")
     }
 
     var gitCommitHash: String? {
@@ -38,7 +38,7 @@ public extension Bundle {
     }
 
     var isQaBuild: Bool {
-        bool(forKey: "IS_QA_BUILD =
+        bool(forKey: "IS_QA_BUILD")
     }
 
     /// Get the full name of the current version e.g "1.0.0-dev" or "1.2.0"
