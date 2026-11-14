@@ -36,6 +36,7 @@ jobs:
             -scheme Authenticator \
             -destination 'generic/platform=iOS Simulator' \
             -skipMacroValidation -skipPackagePluginValidation \
+            ARCHS=arm64 ONLY_ACTIVE_ARCH=YES \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO \
             2>&1 | tee build.log > /dev/null || true
           echo "=== errors ==="
