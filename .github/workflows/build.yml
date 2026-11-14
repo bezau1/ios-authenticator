@@ -40,9 +40,9 @@ jobs:
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO \
             2>&1 | tee build.log > /dev/null || true
           echo "=== errors ==="
-          grep -nE "error:|^ld:|Undefined symbols|duplicate symbol|\*\* BUILD" build.log | grep -v "export " | sort -u -k2 | head -60
+          grep -nE "error:|^ld:|Undefined symbols|duplicate symbol|\*\* BUILD" build.log | grep -v "export " | sort -u -k2 | head -80 || true
           echo "=== linker context ==="
-          grep -n -B2 -A12 -E "^ld:|Undefined symbols|duplicate symbol" build.log | grep -v "export " | head -80
+          grep -n -B2 -A12 -E "^ld:|Undefined symbols|duplicate symbol" build.log | grep -v "export " | head -80 || true
           grep -q "BUILD SUCCEEDED" build.log
 
       - name: Upload build log
